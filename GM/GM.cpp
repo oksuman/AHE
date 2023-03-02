@@ -34,11 +34,8 @@ unsigned char *GM::generate_random_prime2(int len = 1024)
 BIGNUM *GM::generate_random_element1(const BIGNUM *n)
 {
     BIGNUM *random = BN_new();
-    if (!BN_rand_range(random, n)){
-        std::cout << "eeeee" << std::endl;
+    if (!BN_rand_range(random, n))
         handleErrors();
-        std::cout << "ddddd" << std::endl;
-    }
     return random;
 }
 
@@ -142,9 +139,9 @@ unsigned char *GM::Enc(const PK pk, const char M){
         BN_mod_mul(c, pk.g, r_to_2, pk.n, bn_ctx);
         strcpy((char *)C, BN_bn2hex(c));
     }
-    // M == 0
+    // M == 0 이거나 M == -1 
     // c = r^2
-    else if(M == 0)
+    else 
         strcpy((char *)C, BN_bn2hex(r_to_2));
     
     return C;
