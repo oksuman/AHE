@@ -13,7 +13,7 @@ extern "C"
 {
 #endif
 
-    void handleErrors()
+    inline void handleErrors()
     {
         ERR_print_errors_fp(stderr);
         abort();
@@ -59,6 +59,9 @@ extern "C"
         BIGNUM * Add(const PK pk, const BIGNUM *c1, const BIGNUM * c2);
         unsigned char * Add(const PK pk, unsigned char * C1, unsigned char * C2);
 
+        BIGNUM * Sub(const PK pk, const BIGNUM *c1, const BIGNUM * c2);
+        unsigned char * Sub(const PK pk, unsigned char * C1, unsigned char * C2);
+        
         BIGNUM * Scalar_Mul(const PK pk, const BIGNUM * s, const BIGNUM * c);
         unsigned char * Scalar_Mul(const PK pk, const unsigned char * S, const unsigned char * C);
     };

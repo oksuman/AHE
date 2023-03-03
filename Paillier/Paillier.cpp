@@ -44,7 +44,7 @@ PAILLIER::PAILLIER()
     bn_ctx = BN_CTX_new();
 }
 
-PAILLIER::PAILLIER()
+PAILLIER::~PAILLIER()
 {
     BN_CTX_free(bn_ctx);
 }
@@ -58,8 +58,7 @@ void PAILLIER::KeyGen(PK &pk, SK &sk)
     pk.g = BN_new();
     sk.lambda = BN_new();
     sk.mu = BN_new();
-
-    BN_mul(pk.n, p, q, NULL);
+    BN_mul(pk.n, p, q, bn_ctx);
     BN_add(pk.g, pk.n, BN_value_one());
 
 
@@ -196,6 +195,46 @@ unsigned char * PAILLIER::Add(const PK pk, unsigned char * C1, unsigned char * C
 
     return ret;
 }
+
+// c1 - c2 
+BIGNUM * PAILLIER::Sub(const PK pk, const BIGNUM *c1, const BIGNUM * c2)
+{
+    BIGNUM * ret = BN_new();
+    BIGNUM * n_2 = BN_new();
+
+    BIGNUM * r_c2  = BN_new();
+    BN_mod_inverse(r_c2, c2, pk.n, bn_ctx); // r_c2 = 1 / c2
+
+    BN_sqr(n_2, pk.n, bn_ctx); // n_2 = n * n
+
+    BN_mod_mul(ret, c1, r_c2, n_2, bn_ctx);  // c = c1 * c2 mod n_2
+
+    BN_free(r_c2);
+    BN_free(n_2);
+
+    return ret;
+}
+
+unsigned char * PAILLIER::Sub(const PK pk, unsigned char * C1, unsigned char * C2)
+{
+    BIGNUM* c1 = BN_new();
+    BIGNUM* c2 = BN_new();
+    unsigned char * ret = new unsigned char[STR_LENGTH];
+
+    memset(ret, 0x00, STR_LENGTH);
+
+
+    BN_hex2bn(&c1, (char*)C1);
+    BN_hex2bn(&c2, (char*)C2);
+
+    strcpy((char*)ret, BN_bn2hex(Sub(pk, c1, c2)));
+
+    BN_free(c1);
+    BN_free(c2);
+
+    return ret;
+}
+
 
 
 BIGNUM * PAILLIER::Scalar_Mul(const PK pk, const BIGNUM * s, const BIGNUM * c)
