@@ -130,11 +130,11 @@ BIGNUM * PAILLIER::Dec(const PK pk, const SK sk, const BIGNUM* c)
     BN_mod_exp(c_lambda, c, sk.lambda, n_2, bn_ctx); // c_lambda = C^labmda mod n_2
     c_lambda = L(c_lambda, pk.n);                    // L(c_lambda)
 
-    BN_mod_mul(m, m, sk.mu, pk.n, bn_ctx); // m = m * mu mod n
+    BN_mod_mul(m, c_lambda, sk.mu, pk.n, bn_ctx); // m = L(c_lambda) * mu mod n
 
     BN_free(c_lambda);
     BN_free(n_2);
-
+    
     return m;
 }
 unsigned char * PAILLIER::Dec(const PK pk, const SK sk, const unsigned char* C)
@@ -203,11 +203,11 @@ BIGNUM * PAILLIER::Sub(const PK pk, const BIGNUM *c1, const BIGNUM * c2)
     BIGNUM * n_2 = BN_new();
 
     BIGNUM * r_c2  = BN_new();
-    BN_mod_inverse(r_c2, c2, pk.n, bn_ctx); // r_c2 = 1 / c2
-
     BN_sqr(n_2, pk.n, bn_ctx); // n_2 = n * n
 
-    BN_mod_mul(ret, c1, r_c2, n_2, bn_ctx);  // c = c1 * c2 mod n_2
+    BN_mod_inverse(r_c2, c2, n_2, bn_ctx); // r_c2 = 1 / c2
+
+    BN_mod_mul(ret, c1, r_c2, n_2, bn_ctx);  // ret = c1 * c2 mod n_2
 
     BN_free(r_c2);
     BN_free(n_2);

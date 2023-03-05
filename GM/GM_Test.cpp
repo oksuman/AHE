@@ -1,16 +1,15 @@
-// g++ -o test Test.cpp GM.cpp -lssl -lcrypto
+// g++ -o gm_test GM_Test.cpp GM.cpp -lssl -lcrypto
 
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
-#include "GM/GM.h"
+#include "GM.h"
 
 using namespace std;
 using namespace chrono;
 
 int main(int argc, char* argv[]){
-    srand((unsigned int)time(NULL));
     system_clock::time_point gm_total_start_time = system_clock::now();
     for(int k=0; k<1000; k++){
 
@@ -19,6 +18,7 @@ int main(int argc, char* argv[]){
             message : 0 ~ 2047 (11bits binary)
             padding : -1 
         */
+        srand((unsigned int)time(NULL));
         int m_Alice = rand() % 2048;
         int m_Bob = rand() % 2048;
 

@@ -1,11 +1,11 @@
-// g++ -o pa_test Pa_Test.cpp Paillier.cpp -lssl -lcrypto
+// g++ -o ece_test ECE_Test.cpp ECE.cpp -lssl -lcrypto
 
 #include <iostream>
 #include <cstdlib>
 #include <stdlib.h>
 #include <ctime>
 #include <chrono>
-#include "Paillier.h"
+#include "ECE.h"
 
 using namespace std;
 using namespace chrono;
@@ -13,12 +13,12 @@ using namespace chrono;
 int main(int argc, char* argv[]){
 
         /*
-                Paillier based Equality Protocol Test
+                EC ElGamal based Equality Protocol Test
                 message : 0 ~ 2047 (char *)
         */
     system_clock::time_point Pa_total_start_time = system_clock::now();
+    srand((unsigned int)time(NULL));
     for(int k=0; k<1000; k++){
-        srand((unsigned int)time(NULL));
         int m_Alice = rand() % 2048;
         int m_Bob = rand() % 2048;
         
@@ -70,23 +70,23 @@ int main(int argc, char* argv[]){
         
   
         // Initial Step
-        PAILLIER pa = PAILLIER();
-        PK pa_pk;
-        SK pa_sk;
-        pa.KeyGen(pa_pk,pa_sk);
+        ECE *ece = new ECE;
+        ece->KeyGen();
        
-        // // Step 1
-        unsigned char *c_Alice = pa.Enc(pa_pk, hex_m_Alice);
+        // Step 1
+        CIPHERTEXT *c_Alice = ece->Enc(hex_m_Alice);
 
-        // // Step 2
-        unsigned char *c_Bob = pa.Enc(pa_pk, hex_m_Bob);
-        unsigned char *sub_result = pa.Sub(pa_pk, c_Alice, c_Bob);
-        unsigned char *s = pa.generate_random_element2(pa_pk);
-        unsigned char *c_result = pa.Scalar_Mul(pa_pk, s, sub_result);
+        // Step 2
+        CIPHERTEXT *c_Bob = ece->Enc(hex_m_Bob);
+        unsigned char *s = ece->getRandomElement();
+        CIPHERTEXT *c_sub = ece->Sub(*c_Bob, *c_Alice);
+        CIPHERTEXT *c_res = ece->Scalar_Mul(s, *c_sub);
 
-        // // Step 3
-        unsigned char *res = pa.Dec(pa_pk, pa_sk, c_result);
-
+        // Step 3
+        unsigned char *res = ece->Dec(*c_res);
+        
+        if(*(res+1) == 48)
+            cout << "same" << endl;
     }
     system_clock::time_point Pa_total_end_time = system_clock::now();
     milliseconds milli_pa = duration_cast<milliseconds>(Pa_total_end_time - Pa_total_start_time);

@@ -218,26 +218,26 @@ unsigned char * ECE::getRandomElement()
     return ret;
 }
 
-int main(int argc, char *argv[])
-{
-    ECE *ece = new ECE;
+// int main(int argc, char *argv[])
+// {
+//     ECE *ece = new ECE;
 
-    ece->KeyGen();
+//     ece->KeyGen();
 
-    unsigned char *M = ece->getRandomElement();
+//     unsigned char *M = ece->getRandomElement();
 
-    CIPHERTEXT *Ci = ece->Enc(M);
-    CIPHERTEXT *Cj = ece->Enc(M);
+//     CIPHERTEXT *Ci = ece->Enc(M);
+//     CIPHERTEXT *Cj = ece->Enc(M);
 
-    cout << Ci->C1 << endl;
-    cout << Ci->C2 << endl
-         << endl;
+//     cout << Ci->C1 << endl;
+//     cout << Ci->C2 << endl
+//          << endl;
 
-    CIPHERTEXT *C = ece->Sub(*Ci, *Cj);
+//     CIPHERTEXT *C = ece->Sub(*Ci, *Cj);
 
-    unsigned char *res = ece->Dec(*C);
-    printf("%d\n", strlen((char*)res));
-    cout << res << endl;
+//     unsigned char *res = ece->Dec(*C);
+//     printf("%d\n", strlen((char*)res));
+//     cout << res << endl;
 
-    return 0;
-}
+//     return 0;
+// }

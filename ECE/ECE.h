@@ -11,7 +11,7 @@ extern "C"
 {
 #endif
 
-    void handleErrors()
+    inline void handleErrors()
     {
         ERR_print_errors_fp(stderr);
         abort();
